@@ -1,0 +1,330 @@
+# Copyright 2012, Dell
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Author: Dell Crowbar Team
+#
+
+barclamp:
+  name: crowbar
+  display: Crowbar
+  description: Self-referential barclamp enabling other barclamps
+  online_help: 'https://github.com/dellcloudedge/crowbar/wiki'
+  version: 0
+  proposal_schema_version: 1
+  member:
+    - crowbar
+
+crowbar:
+  layout: 1
+  order: 0
+  run_order: 0
+  chef_order: 0
+  proposal_schema_version: 2
+
+locale_additions:
+  en:
+    barclamp:
+      crowbar:
+        edit_attributes:
+          attributes: Attributes
+        edit_deployment:
+          deployment: Deployment
+
+
+debs:
+  ubuntu-10.10:
+    repos:
+      - deb http://us.archive.ubuntu.com/ubuntu/ maverick main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ maverick main restricted universe multiverse
+      - deb http://us.archive.ubuntu.com/ubuntu/ maverick-updates main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ maverick-updates main restricted universe multiverse
+      - deb http://archive.canonical.com/ubuntu maverick partner
+      - deb-src http://archive.canonical.com/ubuntu maverick partner
+      - deb http://extras.ubuntu.com/ubuntu maverick main
+      - deb-src http://extras.ubuntu.com/ubuntu maverick main
+      - deb http://security.ubuntu.com/ubuntu maverick-security main restricted universe multiverse
+      - deb-src http://security.ubuntu.com/ubuntu maverick-security main restricted universe multiverse
+      - deb http://apt.opscode.com/ maverick-0.10 main
+  ubuntu-11.04:
+    repos:
+      - deb http://us.archive.ubuntu.com/ubuntu/ natty main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ natty main restricted universe multiverse
+      - deb http://us.archive.ubuntu.com/ubuntu/ natty-updates main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ natty-updates main restricted universe multiverse
+      - deb http://archive.canonical.com/ubuntu natty partner
+      - deb-src http://archive.canonical.com/ubuntu natty partner
+      - deb http://extras.ubuntu.com/ubuntu natty main
+      - deb-src http://extras.ubuntu.com/ubuntu natty main
+      - deb http://security.ubuntu.com/ubuntu natty-security main restricted universe multiverse
+      - deb-src http://security.ubuntu.com/ubuntu natty-security main restricted universe multiverse
+      - deb http://apt.opscode.com/ natty-0.10 main
+  ubuntu-11.10:
+    repos:
+      - deb http://us.archive.ubuntu.com/ubuntu/ oneiric main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ oneiric main restricted universe multiverse
+      - deb http://us.archive.ubuntu.com/ubuntu/ oneiric-updates main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ oneiric-updates main restricted universe multiverse
+      - deb http://archive.canonical.com/ubuntu oneiric partner
+      - deb-src http://archive.canonical.com/ubuntu oneiric partner
+      - deb http://extras.ubuntu.com/ubuntu oneiric main
+      - deb-src http://extras.ubuntu.com/ubuntu oneiric main
+      - deb http://security.ubuntu.com/ubuntu oneiric-security main restricted universe multiverse
+      - deb-src http://security.ubuntu.com/ubuntu oneiric-security main restricted universe multiverse
+      - deb http://apt.opscode.com/ oneiric-0.10 main
+  ubuntu-12.04:
+    repos:
+      - deb http://us.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ precise main restricted universe multiverse
+      - deb http://us.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse
+      - deb-src http://us.archive.ubuntu.com/ubuntu/ precise-updates main restricted universe multiverse
+      - deb http://archive.canonical.com/ubuntu precise partner
+      - deb-src http://archive.canonical.com/ubuntu precise partner
+      - deb http://extras.ubuntu.com/ubuntu precise main
+      - deb-src http://extras.ubuntu.com/ubuntu precise main
+      - deb http://security.ubuntu.com/ubuntu precise-security main restricted universe multiverse
+      - deb-src http://security.ubuntu.com/ubuntu precise-security main restricted universe multiverse
+      - deb http://apt.opscode.com/ precise-0.10 main
+  #repos:
+    # Rabbit MQ repo
+    #- deb http://www.rabbitmq.com/debian/ testing main
+  build_pkgs:
+    - ruby1.8-dev
+    - rubygems1.8
+    - build-essential
+    - libsqlite3-dev
+    - dpkg-dev
+    - libxml2-dev
+    - zlib1g-dev
+  pkgs:
+    # apache stuff
+    - apache2
+    - apache2-prefork-dev
+    - libopkele-dev
+    - libopkele3
+    - libapache2-svn
+    - libapache2-mod-fcgid
+    - libapache2-mod-php5
+    - libapache2-mod-python
+    - libapache2-mod-wsgi
+    # apt-cacher stuff
+    - apt-cacher
+    # build-essential stuff
+    - build-essential
+    - binutils-doc
+    - autoconf
+    - flex
+    - bison
+    - patch
+    # crowbar stuff
+    - curl
+    - sqlite
+    - libsqlite3-dev
+    - libshadow-ruby1.8
+    - chef
+    - chef-server
+    - chef-server-webui
+    - kwalify
+    - libcurl4-gnutls-dev
+    # minicom stuff
+    - minicom
+    # nscd stuff
+    - nscd
+    # openldap stuff
+    - libnss-ldap
+    - libpam-ldap
+    - ldap-utils
+    - db4.8-util
+    - slapd
+    # openssh stuff
+    - openssh-client
+    - openssh-server
+    # markdown 2 html generation
+    - markdown
+    # rabbitmq stuff
+    - rabbitmq-server
+    # ruby stuff
+    - ruby1.8
+    - ruby1.8-dev
+    - ruby-dev
+    - rubygems
+    - rubygems1.8
+    # runit stuff
+    - runit
+    # sudo stuff
+    #- sudo
+    # java stuff
+    #- sun-java6-jdk
+    #- sun-java6-jre
+    - dpkg-dev
+    - screen
+    - alien
+
+rpms:
+  redhat-5.6:
+    repos:
+      - rpm http://rbel.frameos.org/rbel5
+      - rpm http://ftp.cse.buffalo.edu/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+    build_pkgs:
+      - curl-devel
+      - yum-downloadonly
+      - yum-priorities
+      - createrepo
+      - libxml2-devel
+      - zlib-devel
+    pkgs:
+      - curl-devel
+      - nss_ldap
+  redhat-5.7:
+    repos:
+      - rpm http://rbel.frameos.org/rbel5
+      - rpm http://ftp.cse.buffalo.edu/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+    build_pkgs:
+      - yum-downloadonly
+      - yum-priorities
+      - createrepo
+      - curl-devel
+      - libxml2-devel
+      - zlib-devel
+    pkgs:
+      - curl-devel
+      - nss_ldap
+  centos-5.7:
+    repos:
+      - rpm http://rbel.frameos.org/rbel5
+      - rpm http://ftp.cse.buffalo.edu/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+    build_pkgs:
+      - yum-downloadonly
+      - yum-priorities
+      - createrepo
+      - curl-devel
+      - libxml2-devel
+      - zlib-devel
+    pkgs:
+      - curl-devel
+      - nss_ldap
+  redhat-6.2:
+    repos:
+      - rpm http://rbel.frameos.org/rbel6
+      - rpm http://mirrors.servercentral.net/fedora/epel/6/i386/epel-release-6-7.noarch.rpm
+    build_pkgs:
+      - libcurl-devel
+      - yum-plugin-downloadonly
+      - createrepo
+      - libxml2-devel
+      - zlib-devel
+  centos-6.2:
+    repos:
+      - rpm http://rbel.frameos.org/rbel6
+      - rpm http://mirrors.servercentral.net/fedora/epel/6/i386/epel-release-6-7.noarch.rpm
+    build_pkgs:
+      - libcurl-devel
+      - yum-plugin-downloadonly
+      - yum-plugin-priorities
+      - createrepo
+      - libxml2-devel
+      - zlib-devel
+  fedora-18:
+    build_pkgs:
+      - libcurl-devel
+      - yum-plugin-priorities
+      - createrepo
+      - libxml2-devel
+      - zlib-devel
+  build_pkgs:
+    - rubygems
+    - ruby-devel
+    - make
+    - gcc
+    - kernel-devel
+    - sqlite-devel
+    - mysql-devel
+  pkgs:
+    # apache stuff
+    - httpd
+    - httpd-devel
+    - mod_fcgid
+    - php
+    - mod_python
+    - mod_ssl
+    - mod_wsgi
+    # build-essential stuff
+    - gcc
+    - gcc-c++
+    - kernel-devel
+    - make
+    - autoconf
+    - flex
+    - bison
+    - patch
+    # crowbar stuff
+    - curl
+    - sqlite
+    - sqlite-devel
+    - rubygem-chef-server
+    - rubygem-kwalify
+    - createrepo
+    # minicom stuff
+    - minicom
+    # nscd stuff
+    - nscd
+    # markdown to html stuff
+    - python-markdown
+    # openldap stuff
+    - nss
+    - nss-tools
+    - openldap
+    - openldap-servers
+    - openldap-clients
+    - krb5-workstation
+    # openssh stuff
+    - openssh-clients
+    - openssh-server
+    - openssh
+    # rabbitmq stuff
+    - rabbitmq-server
+    # ruby stuff
+    - ruby
+    - ruby-devel
+    - ruby-shadow
+    # sudo stuff
+    - sudo
+    - screen
+
+gems:
+  pkgs:
+    # bluepill stiff
+    - i18n
+    - state_machine-0.9.4
+    - bluepill-0.0.51
+    # crowbar stuff
+    - rake
+    - json-1.5.2
+    - syslogger
+    - sass
+    - simple-navigation
+    - haml
+    - net-http-digest_auth
+    - rails-2.3.14
+    - activesupport-2.3.14
+    - bundler
+    - builder
+    - activesupport
+    - rainbows
+    - sendfile
+    - sqlite3-ruby
+    - rdoc
+    - net-ssh-multi
+    - formtastic-1.2.4
+    - xml-simple
+    - libxml-ruby

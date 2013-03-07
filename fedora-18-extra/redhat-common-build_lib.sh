@@ -133,44 +133,23 @@ add_offline_repos() (
 # on it without having to have a handy Redhat/CentOS environment to build from.
 # It also makes sure that even if we do, we don't inadvertently wind up installing
 # packages on the build system by mistake.
+
+# Packages are stored in subdirectories bucketed by the first letter of
+# the package name and lowercased
+__pkg_location() {
+    if [ "$OS" = "fedora" -a $OS_VERSION -gt 16 ]; then
+	firstletter=$(echo $pkg | awk '{print tolower(substr ($0, 0, 1))}')
+	echo "$(find_cd_pool)/$firstletter/$pkg"
+    else
+	echo "$(find_cd_pool)/$pkg"
+    fi
+}
+
 __make_chroot() {
     postcmds=()
     # Install basic packages.
-    # RWSU create softlinks to /usr to address rpmlib(X-CheckUnifiedSystemdir) issue
-    echo "RWSU chroot $CHROOT"
-    cd "$CHROOT"; sudo ln -s /usr/bin bin
-    cd "$CHROOT"; sudo ln -s /usr/lib lib
-#    cd "$CHROOT"; sudo mkdir -p /usr/lib64
-#    cd "$CHROOT"; sudo ln -s /usr/lib64 lib64
-    cd "$CHROOT"; sudo ln -s /usr/sbin sbin
-    # verify these rpms are actually needed    
-    rpm2cpio "$HOME/crowbar/fedora-18-extra/MAKEDEV-3.24-11.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    rpm2cpio "$HOME/crowbar/fedora-18-extra/libnih-1.0.2-7.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    rpm2cpio "$HOME/rwsu/crowbar/fedora-18-extra/mcstrans-0.3.3-6.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    rpm2cpio "$HOME/crowbar/fedora-18-extra/mingetty-1.08-11.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    rpm2cpio "$HOME/crowbar/fedora-18-extra/procps-ng-3.3.3-2.20120807git.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    rpm2cpio "$HOME/crowbar/fedora-18-extra/util-linux-2.22.1-2.1.fc18.x86_64.rpm" | \
-                (cd "$CHROOT"; sudo cpio --extract \
-                --make-directories --no-absolute-filenames \
-                --preserve-modification-time)
-    for pkg in "${OS_BASIC_PACKAGES[@]}"; do
-        # RWSU revise ${pkg:0:1} to be fedora only
-        for f in "$(find_cd_pool)/${pkg:0:1}/$pkg"-[0-9]*+(noarch|x86_64).rpm; do
+      for pkg in "${OS_BASIC_PACKAGES[@]}"; do
+         for f in "$(__pkg_location)"-[0-9]*+(noarch|x86_64).rpm; do
             rpm2cpio "$f" | \
                 (cd "$CHROOT"; sudo cpio --extract \
                 --make-directories --no-absolute-filenames \
@@ -182,8 +161,6 @@ __make_chroot() {
             postcmds+=("/bin/rpm -ivh --force --nodeps /tmp/${f##*/}")
         fi
     done
-    # RWSU rpmlib(X-CheckUnifiedSystemdir) issue
-    cd "$CHROOT"; sudo mv ./lib64/* ./usr/lib64/; sudo mv ./lib64/.libgcrypt.so.11.hmac ./usr/lib64; sudo rmdir lib64; sudo ln -s /usr/lib64 lib64
     # install priorities support
     mkdir -p "$CACHE_DIR/$OS_TOKEN/pkgs"
     if [[ $PRIORITIES_RPM ]]; then
@@ -240,10 +217,7 @@ __make_chroot() {
     sudo mount --bind "$IMAGE_DIR" "$CHROOT/packages/base"
     make_repo_file redhat-base 99 "file:///packages/base/$OS_REPO_POOL"
     # have yum bootstrap everything else into usefulness
-    echo "RWSU1"
-    #in_chroot yum -y install yum yum-downloadonly createrepo
-    in_chroot yum -y install yum createrepo
-    echo "RWSU2"
+    in_chroot yum -y install yum yum-downloadonly createrepo
     # Once we have the chroot bootstrapped, restore the CentOS repos.
     # If we are using a proxy, fastestmirror usually does the Wrong Thing.
     [[ $USE_PROXY = 1 && \

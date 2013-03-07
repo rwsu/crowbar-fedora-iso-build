@@ -1,6 +1,6 @@
 #!/bin/bash
 # This is sourced by build_crowbar.sh to enable it to stage Crowbar onto
-# CentOS 6.2
+# Fedora 18
 
 
 # OS information for the OS we are building crowbar on to.
@@ -9,24 +9,26 @@ OS_VERSION=18
 
 # If we need to make a chroot to stage packages into, this is the minimal
 # set of packages needed to bootstrap yum.  This package list has only been tested
-# on CentOS 6.2.
+# on Fedora 18
 
-
-OS_BASIC_PACKAGES=(MAKEDEV upstart audit-libs basesystem bash binutils \
+# Note filesystem should be the first package installed. It sets up the directory
+# structure so that /bin, /lib, /lib64, and /sbin are links to directories
+# user /usr. See http://fedoraproject.org/wiki/Features/UsrMove
+OS_BASIC_PACKAGES=(filesystem audit-libs basesystem bash binutils \
     bzip2-libs chkconfig cracklib cracklib-dicts crontabs coreutils \
     device-mapper e2fsprogs e2fsprogs-libs elfutils-libelf ethtool expat \
-    file-libs filesystem findutils gawk gdbm glib2 glibc glibc-common grep \
+    file-libs findutils gawk gdbm glib2 glibc glibc-common grep \
     info initscripts iputils keyutils-libs krb5-libs libacl libattr libcap \
     libcom_err libdb libffi libgcc libidn libselinux libsepol libstdc++ libsysfs libgcrypt \
-    libnih dbus-libs libcurl curl lua compat-libtermcap libutempter libxml2 \
-    libxml2-python logrotate m2crypto mcstrans mingetty mlocate \
+    dbus-libs libcurl curl lua  libutempter libxml2 \
+    libxml2-python logrotate m2crypto mlocate \
     module-init-tools ncurses ncurses-libs neon net-tools nss nss-sysinit \
     nss-softokn nss-softokn-freebl openldap openssl-libs libssh2 cyrus-sasl-lib nss-util \
-    nspr openssl pam passwd libuser pcre popt procps psmisc python \
+    nspr openssl pam passwd libuser pcre popt psmisc python \
     python-libs python-pycurl python-iniparse python-urlgrabber readline rpm \
     rpm-libs rpm-python sed setup shadow-utils fedora-release \
-    sqlite rsyslog tzdata udev util-linux-ng xz xz-libs yum \
-    yum-plugin-downloadonly yum-metadata-parser yum-utils zlib)
+    sqlite rsyslog tzdata xz xz-libs yum \
+    yum-metadata-parser yum-utils zlib)
 
 #
 # See:
@@ -40,7 +42,7 @@ OS_REPO_POOL=""
 
 # We always want to shrink the generated ISO, otherwise the install will
 # fail due to lookingfor packages on the second ISO that we don't have.
-SHRINK_ISO=false
+SHRINK_ISO=true
 
 # The location of OS packages on $ISO
 find_cd_pool() ( echo "$IMAGE_DIR/Packages" )
@@ -72,6 +74,11 @@ shrink_iso() {
         [[ -f ${CD_POOL["$pkgname"]} ]] || \
             die "Cannot stage $pkgname from the CD!"
         cp "${CD_POOL["$pkgname"]}" "$BUILD_DIR/Packages"
+
+	# Reorganize packages for fedora ver > 17
+        firstletter=$(echo $pkgname | awk '{print tolower(substr ($0, 0, 1))}')
+        mkdir -p "$BUILD_DIR/Packages/$firstletter"
+        cp "${CD_POOL["$pkgname"]}" "$BUILD_DIR/Packages/$firstletter"
     done
     sudo mount --bind "$BUILD_DIR" "$CHROOT/mnt"
     in_chroot 'cd /mnt; createrepo -g /mnt/repodata/3a27232698a261aa4022fd270797a3006aa8b8a346cbd6a31fae1466c724d098-c6-x86_64-comps.xml .'

@@ -2,7 +2,7 @@
 
 install
 cdrom
-key --skip
+#key --skip
 lang en_US.UTF-8
 keyboard us
 text
@@ -24,19 +24,20 @@ logvol / --fstype ext4 --name=lv_root --vgname=lv_admin --size=1 --grow
 reboot
 
 %packages
-@base
+@standard
 @core
-vim-enhanced
+#vim-enhanced
 keyutils
 trousers
 fipscheck
 device-mapper-multipath
-OpenIPMI
-OpenIPMI-tools
-emacs-nox
+#OpenIPMI
+#OpenIPMI-tools
+#emacs-nox
 openssh
 createrepo
-screen
+#screen
+%end
 
 %post --nochroot
 export PS4='${BASH_SOURCE}@${LINENO}(${FUNCNAME[0]}): '
@@ -47,6 +48,7 @@ set -x
     mkdir -p /mnt/sysimage/tftpboot/redhat_dvd/dell
     cp -a /mnt/source/. /mnt/sysimage/tftpboot/redhat_dvd/.
 ) &>/mnt/sysimage/root/post-install-copy.log
+%end
 
 %post
 export OS_TOKEN="fedora-18"
@@ -56,3 +58,4 @@ set -x
 exec &>/root/post-install.log
 
 . /tftpboot/redhat_dvd/extra/redhat-common-post.sh
+%end

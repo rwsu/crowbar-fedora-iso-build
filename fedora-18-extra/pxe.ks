@@ -39,6 +39,7 @@ emacs-nox
 openssh
 createrepo
 screen
+%end
 
 %post
 export PS4='${BASH_SOURCE}@${LINENO}(${FUNCNAME[0]}): '
@@ -66,3 +67,4 @@ while read file dest; do
 done < "${BASEDIR}/crowbar_links.list"
 
 . /tftpboot/redhat_dvd/extra/redhat-common-post.sh
+%end
